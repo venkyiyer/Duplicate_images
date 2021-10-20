@@ -1,10 +1,10 @@
-from typing import ContextManager
 import cv2
 import numpy as np
 import imutils
 import os
 
 images_path = ('./images')
+threshold_images_path = ('./Difference')
 contents = sorted(os.listdir(images_path))
 
 def draw_color_mask(img, borders, color=(0, 0, 0)):
@@ -48,30 +48,19 @@ def compare_frames_change_detection(prev_frame, next_frame, min_contour_area):
             continue
         res_cnts.append(c)
         score += cv2.contourArea(c)
-    return print(score)
+    cv2.imwrite(threshold_images_path+'/'+img_name1+'_'+img_name2+'_'+str(score)+'.png',thresh)
 
 for img1, img2 in zip(contents[0::1], contents[1::1]):
+    img_name1 = img1
+    img_name2 = img2
     img1, img2 = preprocess_image_change_detection(img1, img2, gaussian_blur_radius_list=(11,11), black_mask=(5, 10, 5, 0))
+    compare_frames_change_detection(img1, img2, 50)
+
+
+
     
 
 
-    
-
-
-
-
-
-
-#cv2.imshow('img1', img1)
-#cv2.imshow('img2', img2)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
-    #exit()
-
-#cv2.imshow('prev_f', thresh)
-   # cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-    #exit()
 
 
 
