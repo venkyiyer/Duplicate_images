@@ -21,3 +21,8 @@ Approx -- 2298 area of car when in certain distance 4000- if closer
 5000 min contour area to detect cars. 
 If too close, it's too much area
 
+3. 
+Does GB changes anything? 
+Kernel size 201, 201
+The area increases just a bit. 
+
