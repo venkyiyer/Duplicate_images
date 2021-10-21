@@ -4,7 +4,7 @@ import imutils
 import os
 
 images_path = ('./images')
-threshold_images_path = ('./Difference')
+threshold_images_path = ('./DifferenceGB')
 contents = sorted(os.listdir(images_path))
 
 def draw_color_mask(img, borders, color=(0, 0, 0)):
@@ -20,7 +20,7 @@ def draw_color_mask(img, borders, color=(0, 0, 0)):
     img = cv2.rectangle(img, (0, y_max), (w, h), color, -1)
     return img
 
-def preprocess_image_change_detection(img1,img2, gaussian_blur_radius_list=(11,11), black_mask=(5, 10, 5, 0)):
+def preprocess_image_change_detection(img1,img2, gaussian_blur_radius_list=(201,201), black_mask=(5, 10, 5, 0)):
     img1 = cv2.imread(images_path+'/'+img1)
     img2 = cv2.imread(images_path+'/'+img2)
     gray1 = img1.copy()
@@ -40,21 +40,32 @@ def compare_frames_change_detection(prev_frame, next_frame, min_contour_area):
     thresh = cv2.threshold(frame_delta, 45, 255, cv2.THRESH_BINARY)[1]
     thresh = cv2.dilate(thresh, None, iterations=2)
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    print(type(cnts))
     cnts = imutils.grab_contours(cnts)
     score = 0
     res_cnts = []
     for c in cnts:
+        #print(type(c))
         if cv2.contourArea(c) < min_contour_area:
             continue
+        #cv2.drawContours(thresh, c, -1, (0,255,0))
+        cv2.imshow('Threshold', thresh)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
         res_cnts.append(c)
         score += cv2.contourArea(c)
+    #cv2.imshow('Threshold', thresh)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+    #print(score)
+    #exit()
     cv2.imwrite(threshold_images_path+'/'+img_name1+'_'+img_name2+'_'+str(score)+'.png',thresh)
 
 for img1, img2 in zip(contents[0::1], contents[1::1]):
     img_name1 = img1
     img_name2 = img2
     img1, img2 = preprocess_image_change_detection(img1, img2, gaussian_blur_radius_list=(11,11), black_mask=(5, 10, 5, 0))
-    compare_frames_change_detection(img1, img2, 50)
+    compare_frames_change_detection(img1, img2, 10)
 
 
 

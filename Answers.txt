@@ -1,0 +1,23 @@
+Experiments:
+
+1. 
+Changing the contour area:
+When the contour area is kept less, for E.g 10, the total area of change or score is more.  - 1593.5
+This means it ingnores small changes like humans, or some vehicle movements outside the parking area. 
+Bigger contour area then then smaller changes are ignored and so the score remains less
+
+Eg. 10 min contour area -- score == 1593
+Eg. 500 min contour area -- score = 1135
+Eg . 600 min contour area -- score = 0
+
+2. 
+Some of the absdiff also detects lights (headlights) as changes. I think we do 
+not need that as the dataset mainly tries to capture changes in the parking lot
+i-e cars.
+Also, detects day and night time lighting changes. 
+
+
+Approx -- 2298 area of car when in certain distance 4000- if closer
+5000 min contour area to detect cars. 
+If too close, it's too much area
+
