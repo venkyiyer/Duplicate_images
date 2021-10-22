@@ -48,17 +48,8 @@ def compare_frames_change_detection(prev_frame, next_frame, min_contour_area):
         #print(type(c))
         if cv2.contourArea(c) < min_contour_area:
             continue
-        #cv2.drawContours(thresh, c, -1, (0,255,0))
-        #cv2.imshow('Threshold', thresh)
-        #cv2.waitKey(0)
-        #cv2.destroyAllWindows()
         res_cnts.append(c)
         score += cv2.contourArea(c)
-    #cv2.imshow('Threshold', thresh)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-    #print(score)
-    #exit()
     cv2.imwrite(threshold_images_path+'/'+img_name1+'_'+img_name2+'_'+str(score)+'.png',thresh)
 
 for img1, img2 in zip(contents[0::1], contents[1::1]):
