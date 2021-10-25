@@ -1,11 +1,12 @@
+# An implemntation to understand and experimenting with duplicates based on the values of threshold, smoothing factor, and minimum contour area
 import cv2
 import numpy as np
 import imutils
 import os
 
 images_path = ('./images')
-threshold_images_path = ('./DifferenceGB')
 contents = sorted(os.listdir(images_path))
+duplicates = []
 
 def draw_color_mask(img, borders, color=(0, 0, 0)):
     h = img.shape[0]
@@ -20,7 +21,7 @@ def draw_color_mask(img, borders, color=(0, 0, 0)):
     img = cv2.rectangle(img, (0, y_max), (w, h), color, -1)
     return img
 
-def preprocess_image_change_detection(img1,img2, gaussian_blur_radius_list=(201,201), black_mask=(5, 10, 5, 0)):
+def preprocess_image_change_detection(img1,img2, gaussian_blur_radius_list, black_mask):
     img1 = cv2.imread(images_path+'/'+img1)
     img2 = cv2.imread(images_path+'/'+img2)
     gray1 = img1.copy()
@@ -40,27 +41,30 @@ def compare_frames_change_detection(prev_frame, next_frame, min_contour_area):
     thresh = cv2.threshold(frame_delta, 45, 255, cv2.THRESH_BINARY)[1]
     thresh = cv2.dilate(thresh, None, iterations=2)
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-    print(type(cnts))
     cnts = imutils.grab_contours(cnts)
     score = 0
     res_cnts = []
     for c in cnts:
-        #print(type(c))
         if cv2.contourArea(c) < min_contour_area:
             continue
-        res_cnts.append(c)
         score += cv2.contourArea(c)
-    cv2.imwrite(threshold_images_path+'/'+img_name1+'_'+img_name2+'_'+str(score)+'.png',thresh)
+        res_cnts.append(c)
+    if score == 0:
+        duplicates.append(images_path+'/'+img_name2)
 
 for img1, img2 in zip(contents[0::1], contents[1::1]):
     img_name1 = img1
     img_name2 = img2
-    img1, img2 = preprocess_image_change_detection(img1, img2, gaussian_blur_radius_list=(11,11), black_mask=(5, 10, 5, 0))
-    compare_frames_change_detection(img1, img2, 10)
+    img1, img2 = preprocess_image_change_detection(img1, img2, gaussian_blur_radius_list=(21, 21), black_mask=(5, 10, 5, 0))
+    compare_frames_change_detection(img1, img2, 2000)
 
+print(len(duplicates))
 
+for index in duplicates:
+    os.remove(index)
 
-    
+print('Duplicates removed!')
+
 
 
 

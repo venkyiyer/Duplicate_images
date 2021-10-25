@@ -1,15 +1,15 @@
+# A demo example to understand how SSIM scoring works between frames. If Score = 1.0 - Perfect match
 from skimage.measure import compare_ssim
 import os
 import cv2
 import imutils
 
+# path for the images
 images_path = ('./images')
 contents = sorted(os.listdir(images_path))
-threshold_images_path = ('./ssidiff')
+
 
 for img1, img2 in zip(contents[0::1], contents[1::1]):
-    img_name1 = img1
-    img_name2 = img2
     img1 = cv2.imread(images_path+'/'+img1)
     img2 = cv2.imread(images_path+'/'+img2)
     gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
@@ -26,4 +26,5 @@ for img1, img2 in zip(contents[0::1], contents[1::1]):
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(img1,(x, y),(x + w, y + h), (0, 0, 255), 2)
         cv2.rectangle(img2, (x, y), (x + w, y + h), (0, 0, 255), 2)
-    cv2.imwrite(threshold_images_path+'/'+img_name1+'_'+img_name2+'_'+str(score)+'.png',diff)
+
+print('Finished')
